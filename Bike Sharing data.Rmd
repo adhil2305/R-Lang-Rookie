@@ -1,0 +1,308 @@
+---
+title: "program choice"
+author: "Adhil"
+date: '2022-06-26'
+output:
+  html_document:
+    df_print: kable
+    theme: lumen
+    toc: yes
+    toc_float: yes
+    code_folding: hide
+    highlight: zenburn
+---
+<style>
+#TOC {
+  font-size: 16px;
+  font-family: Bookman Old Style;
+  color: darkgreen; 
+}
+
+p {
+    font-size: 18px;
+    font-family: Bookman Old Style;
+    line-height: 24px;
+    margin: 0px 0px 12px 0px;
+    text-align:justify;
+}
+
+h1 {
+    text-align: center;
+    font-family: Bookman Old Style;
+    font-size: 24px;
+    font-weight: bold;
+    color: maroon;
+}
+
+h2, h3, h4, h5, h6, legend {
+    font-family: Bookman Old Style;
+    font-size: 18px;
+    font-weight: bold;
+    color: darkblue;
+}
+
+</style>
+
+## Introducion
+
+Choice of students in learning learning prog and their performance is observed here
+This includes the economic condition their performance and other privilages
+
+
+## Nature of Variables
+
+*Instant: record index
+*dteday : date
+*season : season (1:springer, 2:summer, 3:fall, 4:winter)
+*yr : year (0: 2011, 1:2012)
+*mnth : month ( 1 to 12)
+*hr : hour (0 to 23)
+*holiday : weather day is holiday or not (extracted from http://dchr.dc.gov/page/holiday-schedule)
+*weekday : day of the week
+*workingday : if day is neither weekend nor holiday is 1, otherwise is 0.
+*weathersit : 
+		- 1: Clear, Few clouds, Partly cloudy, Partly cloudy
+		- 2: Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist
+		- 3: Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds
+    - 4: Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog
+*temp : Normalized temperature in Celsius. The values are divided to 41 (max)
+*atemp: Normalized feeling temperature in Celsius. The values are divided to 50 (max)
+*hum: Normalized humidity. The values are divided to 100 (max)
+*windspeed: Normalized wind speed. The values are divided to 67 (max)
+*casual: count of casual users
+*registered: count of registered users
+*cnt: count of total rental bikes including both casual and registered
+	
+
+## Information obtained
+
+
+
+
+
+```{r , warning = FALSE, message = FALSE,echo=FALSE,comment=F, include=F}
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+library(gpairs)
+
+
+bike1 = read.csv("F:/Rappo/Data Sheets/bike sharing data/day.csv",header = T)
+
+str(bike1)
+bike1$weekday = as.factor(bike1$weekday) 
+bike1$season = as.factor(bike1$season) 
+bike1$yr = as.factor(bike1$yr) 
+bike1$mnth = as.factor(bike1$mnth) 
+bike1$hr = as.factor(bike1$hr) 
+bike1$weathersit = as.factor(bike1$weathersit) 
+bike1$workingday = as.factor(bike1$workingday) 
+bike1$holiday = as.factor(bike1$holiday) 
+
+
+bike1 = bike1 %>% mutate(season=case_when(season==1~"Spring",
+                                          season==2~"Summer",
+                                          season==3~"Autumn",
+                                          season==4~"Winter"))
+
+bike1 = bike1 %>% mutate(weathersit = case_when(weathersit==1~"clear",
+                                          weathersit==2~"Mist",
+                                          weathersit==3~"Light snow",
+                                          weathersit==4~"heavy rain"))
+
+
+
+quantile(bike1$windspeed)
+median(bike1$windspeed)
+selection = bike1 %>% select_if(is.numeric)
+c1 = cor(selection)
+
+selection2 = bike1 %>% select_if(is.numeric)
+selection2
+
+windspeed_at_season = bike1 %>% group_by(season) %>% summarise(mean = mean(hum),
+                                                               median = median(temp),
+                                                               varience =var(temp))
+windspeed_at_season
+
+
+weathercondition = bike1 %>% group_by(weathersit) %>% summarise(mean = mean(hum),
+                                                               median = median(temp),
+                                                               varience =var(temp),
+                                                               mode = mode(hum))
+weathercondition
+
+
+ftable(selection2)
+
+macros = ggplot(bike1, aes(windspeed,fill=weathersit)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+macros
+
+
+
+```
+
+## Science performance
+
+```{r,warning = F, message = FALSE}
+library(corrplot)
+       
+corrplot(bike1$windspeed,bike1$temp)
+S
+
+res_corr=cor(bike1[,c(11:14,1)])
+
+corrplot(res_corr)
+
+
+corrplot(res_corr,method="number",
+         type="lower",diag = F,
+         number.digits=2,
+         cl.lim=c(-1,1),
+         col=colorRampPalette(c("darkblue","red","green"))(10) ,
+         tl.pos="n")
+
+seasons  = ggplot(bike1,aes(y=windspeed,fill=seasons)) + geom_boxplot()
+
+bike1 %>% group_by(weathersit) %>% summarise(mean(hum))
+
+shapiro.test(bike1$hum)
+
+mean(hum)
+selection3 = bike1 %>% select_if(is.numeric)
+summary(selection3)
+
+ftable(selection3)
+
+t.test(bike1$hum,mu = 0.6272, conf.level = 0.99)
+
+anv=aov(windspeed~weathersit,data = bike1)
+summary(anv)
+
+
+
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+   
+
+
+```
+
+* Students who come from good socio-economic background are good at scoring high marks
+
+* Some male candidates score high marks however the students of good social status are the majority who more marks 
+```{r,warning = F, message = FALSE}
+
+macros1 = ggplot(choisir1, aes(science,fill=ses)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+macros1
+```
+* High income group tend to perform perform better in most of the subjects
+
+
+
+* Female students are better than male students in all subjects compared to male students 
+
+
+```{r,warning=F, message=FALSE}
+library(kableExtra)
+
+c1[upper.tri(c1,diag = FALSE)]<-" "
+diag(c1)=""
+kable(rbind(c1)) %>%  kable_styling()
+
+
+p0=ggplot(choisir1, aes(math)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+
+p0
+```
+
+## Inference
+
+* The percentage of female students who are good at  academics are comparatively a little higher than the male candidates
+
+* The public and the private school performance in Math is same
+
+* The career choice of students is evenly distributed
+
+```{r,warning=F, message=FALSE}
+
+PL4=ggplot(choisir1, aes(x=math,y=science,color=schtyp))+ 
+  geom_point()+ 
+  xlab("Math")+ 
+  ylab("Awards")+ 
+  facet_grid(ses~Gender+honors,
+             scales = "free",space="free")+
+  theme(legend.position = "bottom")+
+  scale_color_manual(values=c("pink","black",
+                              "brown","green"))
+PL4
+```
+
+
+```{r,warning = FALSE, message=FALSE}
+
+ = <- <- <- +
+
+
+```{r,warning=F, message=FALSE}
+
+bla1 = ggplot(choisir1,
+      aes(x = factor(""), fill = schtyp) ) +
+  geom_bar() +
+  coord_p <- <- <- <- <- <- <- <- <- olar(theta = "y") +
+  scale_x_discrete("")+
+  scale_y_discrete("")+
+  theme(axis.ticks=element_blank(),  
+        axis.title=element_blank(),  
+        axis.text.y=element_blank(),
+        axis.text.x=element_blank(),
+        panel.grid  = element_blank(),
+        legend.position = "bottom")+
+  labs(title = "curriculum",
+       caption="Programchoice")
+bla1
+```
+* The type of program students choose
+
+```{r,warning=F, message=FALSE}
+
+bla2 = ggplot(choisir1,
+      aes(x = factor(""), fill = prog) ) +
+  geom_bar() +
+  coord_polar(theta = "y") +
+  scale_x_discrete("")+
+  scale_y_discrete("")+
+  theme(axis.ticks=element_blank(),  
+        axis.title=element_blank(),  
+        axis.text.y=element_blank(),
+        axis.text.x=element_blank(),
+        panel.grid  = element_blank(),
+        legend.position = "bottom")+
+  labs(title = "Type of Program studensts Choose",
+       caption="Program choice")
+bla2
+```
+
+
+
+
+## Conclusion
+
+* Thus from the given data set we came to infer that the data shows that students are more capable at their academics they just need economic stability to ensure that they come out in flying colors 
+* The female students are better than boys relatively 
+* The Students who graduate from private school perform better than students from public Schools 
+* The choice of students towards the curriculum program is distributed equally.
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

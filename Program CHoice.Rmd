@@ -1,0 +1,233 @@
+---
+title: "program choice"
+author: "Adhil"
+date: '2022-06-26'
+output:
+  html_document:
+    df_print: kable
+    theme: lumen
+    toc: yes
+    toc_float: yes
+    code_folding: hide
+    highlight: zenburn
+---
+<style>
+#TOC {
+  font-size: 16px;
+  font-family: Bookman Old Style;
+  color: darkgreen; 
+}
+body{
+background-color:cyan;
+}
+p {
+    font-size: 18px;
+    font-family: Bookman Old Style;
+    line-height: 24px;
+    margin: 0px 0px 12px 0px;
+    text-align:justify;
+}
+
+h1 {
+    text-align: center;
+    font-family: Bookman Old Style;
+    font-size: 24px;
+    font-weight: bold;
+    color: maroon;
+}
+
+h2, h3, h4, h5, h6, legend {
+    font-family: Bookman Old Style;
+    font-size: 18px;
+    font-weight: bold;
+    color: darkblue;
+}
+
+</style>
+
+## Introducion
+
+Choice of students in learning learning prog and their performance is observed here
+This includes the economic condition their performance and other privilages
+
+
+## Nature of Variables
+
+* x - integer defines serial numbers
+* id - integer The variable which gives the student identity code
+* Gender - factor The type of students whether they are male or female
+* ses - factor Social economic status of studens low , middle or high
+* schtyp - factor The school type which the students have chosen public or private
+* prog - factor The type of program the student has enrolled in
+* read - integer The marks obtained by students in reading assessment 
+* write - integer The marks scored by an individual in a writing assessment
+* math - integer The marks scored by students in a math test
+* science - integer The score of students in science
+* socst - integer The score of students in social srudies
+* honors - factor with binomial levels enrolled or not enrolled
+* awards - Factor with polychotomous nature
+* cid - Factor with polychotomous nature
+
+## Information obtained
+
+
+
+
+
+```{r , warning = FALSE, message = FALSE,echo=FALSE,comment=F, include=F}
+library(dplyr)
+choisir1 = read.csv("F:/Rappo/Data Sheets/5.ProgramChoice.csv",header = T) 
+
+str(choisir1)
+
+not = which(is.na(choisir1))
+not
+
+choisir1$cid = as.factor(choisir1$cid) 
+choisir1$honors = as.factor(choisir1$honors)
+choisir1$awards = as.factor(choisir1$awards)
+choisir1 = choisir1 %>% rename(Gender = female)
+choisir1$prog = as.factor(choisir1$prog)
+choisir1$schtyp = as.factor(choisir1$schtyp)
+choisir1$Gender = as.factor(choisir1$Gender)
+choisir1$ses = as.factor(choisir1$ses)
+str(choisir1)
+dim(choisir1)
+
+suppressWarnings(suppressMessages(library(ggplot2)))
+
+quantile(choisir1$math)
+median(choisir1$math)
+selection = choisir1 %>% select_if(is.numeric)
+c1 = cor(selection)
+
+selection2 = choisir1 %>% select_if(is.numeric)
+selection2
+
+
+```
+
+## Science performance
+
+```{r,warning = F, message = FALSE}
+macros = ggplot(choisir1, aes(science,fill=ses)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+macros
+
+
+```
+
+* Students who come from good socio-economic background are good at scoring high marks
+
+* Some male candidates score high marks however the students of good social status are the majority who more marks 
+```{r,warning = F, message = FALSE}
+
+macros1 = ggplot(choisir1, aes(science,fill=ses)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+macros1
+```
+* High income group tend to perform perform better in most of the subjects
+
+
+
+* Female students are better than male students in all subjects compared to male students 
+
+
+```{r,warning=F, message=FALSE}
+library(kableExtra)
+
+c1[upper.tri(c1,diag = FALSE)]<-" "
+diag(c1)=""
+kable(rbind(c1)) %>%  kable_styling()
+
+
+p0=ggplot(choisir1, aes(math)) + 
+  geom_histogram() + 
+  xlab(NULL) + 
+  ylab(NULL)
+
+p0
+```
+
+## Inference
+
+* The percentage of female students who are good at  academics are comparatively a little higher than the male candidates
+
+* The public and the private school performance in Math is same
+
+* The career choice of students is evenly distributed
+
+```{r,warning=F, message=FALSE}
+
+PL4=ggplot(choisir1, aes(x=math,y=science,color=schtyp))+ 
+  geom_point()+ 
+  xlab("Math")+ 
+  ylab("Awards")+ 
+  facet_grid(ses~Gender+honors,
+             scales = "free",space="free")+
+  theme(legend.position = "bottom")+
+  scale_color_manual(values=c("pink","black",
+                              "brown","green"))
+PL4
+```
+
+
+```{r,warning = FALSE, message=FALSE}
+
+ = <- <- <- +
+
+
+```{r,warning=F, message=FALSE}
+
+bla1 = ggplot(choisir1,
+      aes(x = factor(""), fill = schtyp) ) +
+  geom_bar() +
+  coord_p <- <- <- <- <- <- <- <- <- olar(theta = "y") +
+  scale_x_discrete("")+
+  scale_y_discrete("")+
+  theme(axis.ticks=element_blank(),  
+        axis.title=element_blank(),  
+        axis.text.y=element_blank(),
+        axis.text.x=element_blank(),
+        panel.grid  = element_blank(),
+        legend.position = "bottom")+
+  labs(title = "curriculum",
+       caption="Programchoice")
+bla1
+```
+* The type of program students choose
+
+```{r,warning=F, message=FALSE}
+
+bla2 = ggplot(choisir1,
+      aes(x = factor(""), fill = prog) ) +
+  geom_bar() +
+  coord_polar(theta = "y") +
+  scale_x_discrete("")+
+  scale_y_discrete("")+
+  theme(axis.ticks=element_blank(),  
+        axis.title=element_blank(),  
+        axis.text.y=element_blank(),
+        axis.text.x=element_blank(),
+        panel.grid  = element_blank(),
+        legend.position = "bottom")+
+  labs(title = "Type of Program studensts Choose",
+       caption="Program choice")
+bla2
+```
+
+
+
+
+## Conclusion
+
+* Thus from the given data set we came to infer that the data shows that students are more capable at their academics they just need economic stability to ensure that they come out in flying colors 
+* The female students are better than boys relatively 
+* The Students who graduate from private school perform better than students from public Schools 
+* The choice of students towards the curriculum program is distributed equally.
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

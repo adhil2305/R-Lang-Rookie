@@ -1,0 +1,56 @@
+---
+title: "R-code"
+output: html_document
+date: '2022-06-01'
+---
+
+This is my first attempt 
+
+```{r setup, message =FALSE,warning=FALSE}
+<style>.container{
+  display:block;
+  margin:1px;
+  border-width:2px solidblack;
+}</style>
+  <marquee> The element is on trial  </marquee>
+ # Loading datasets from librarry ...
+  library(datasets)
+
+#loading mtcars from the datasets
+ca = datasets::mtcars
+
+# shape and size of the dataset mtcars is found here
+dim(ca)
+
+# The structure and the nature of the dataset mtcars is calibrated 
+str(ca)
+# dplyr package contains a set of predefined functions to make our job easier
+library(dplyr)
+# As per the sequence request 1 to 20 rows are taken and the columns 2 to 6 are used
+sequence1 = ca %>% slice(c(1:20,50:60),2:6)
+
+# This command is used to view the data in .xls format
+View(sequence1)
+
+# The NA ie the not availabe data is checked here
+nulldata = which(is.na(ca)==TRUE)
+nulldata
+ 
+ca[c(1:20,50:60),2:6]
+   # Creating a new var1 using the given cases 
+## The values of mpg less than 20 are marked low the values between 20to 23 are marked medium 
+#and the values above twenty three miles per gallon are named as high in the new variable
+ca1 = ca %>% mutate(newvar1 = case_when(mpg<=20~"low",
+                                       mpg>20 & mpg<=23~"medium",
+                                       TRUE~"high"))
+
+# filtering the values less than 30 in miles per gallon 
+mpgfilter = ca %>% filter(mpg<20)
+
+View(ca)
+
+
+
+
+
+```

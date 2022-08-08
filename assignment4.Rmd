@@ -1,0 +1,114 @@
+---
+title: "Assignment4"
+author: "Adhil"
+date: '2022-06-14'
+output: 
+  html_document: 
+    df_print: kable
+    theme: darkly
+    toc: yes
+    toc_float: yes
+---
+<style>
+#TOC {
+  font-size: 16px;
+  font-family: roboto, verdana;
+  color: cyan; 
+}
+p {
+    font-size: 18px;
+    font-family: Bookman Old Style;
+    line-height: 24px;
+    margin: 0px 0px 12px 0px;
+}
+
+h1 {
+    text-align: center;
+    font-family: roboto;
+    font-size: 24px;
+    font-weight: bold;
+    color: lightgreen;
+}
+
+h2, h3, h4, h5, h6, legend {
+    font-family: Bookman Old Style;
+    font-size: 18px;
+    font-weight: bold;
+    color: cyan;
+}
+
+</style>
+
+#Loading data...
+```{r , warnings = FALSE, message = FALSE,  comment=""}
+
+absents = read.csv("F:/Rappo/Data Sheets/Absenteeism_at_work.csv")
+require(dplyr)
+###Check whether NA is available or not###
+f1 = which(is.na(absents))
+f1
+```
+
+
+#Nature of variable
+```{r , warnings = FALSE, message = FALSE,  comment=""}
+
+str(absents)
+```
+
+
+#Transforming Nature of the variables
+```{r , warnings = FALSE, message = FALSE,  comment=""}
+
+absents$Seasons = as.factor(absents$Seasons)
+absents$Social.smoker = as.factor(absents$Social.smoker)
+absents$ID = as.factor(absents$ID)
+absents$Social.drinker = as.factor(absents$Social.drinker)
+absents$Reason.for.absence = as.factor(absents$Reason.for.absence)
+absents$Month.of.absence = as.factor(absents$Month.of.absence)
+absents$Month.of.absence = as.factor(absents$Month.of.absence)
+absents$Disciplinary.failure = as.factor(absents$Disciplinary.failure)
+absents$Day.of.the.week = as.factor(absents$Day.of.the.week)
+
+
+```
+
+
+#Rename variables
+```{r , warnings = FALSE, message = FALSE,  comment=""}
+
+absents2 = absents %>%  rename(Sons = Son )
+```
+
+
+# Find suitable univariate summaries
+```{r , warnings = FALSE, message = FALSE, comment=""}
+
+
+
+
+```
+
+We have found out the factors that affect the the increase in the absentees
+the increase in transport expenses increases the absentees by 3%
+* The Distance from home to work increses absentees by 9%
+* If service time increase by 2% absentees also increase by 2%
+* The more the number of children the employee has the more the employee takes a
+day off
+* The Person who is a smoker and a drinker has a high risk of being absent for a long time period
+
+
+# Find the required Correlation for grouped and ungrouped
+```{r , warnings = FALSE, message = FALSE,  comment=""}
+d13=absents %>% group_by(Seasons,Absenteeism.time.in.hours) %>% summarise(CNT=n()) %>%  mutate(PERC=round(100*CNT/nrow(absents),2))
+
+d11 = absents %>% group_by(Reason.for.absence, Absenteeism.time.in.hours) %>% summarise(mean = mean(Absenteeism.time.in.hours), ctt = n())
+
+```
+1. In the first Season 30 people are absent by 2 hours 
+1. Twenty nine people are absent by 4 hours in the first season
+1. The time of absenteeism is high for diseases of the circulatory system
+1. The cause due to 23 and 28 are alarmingly high
+
+
+
